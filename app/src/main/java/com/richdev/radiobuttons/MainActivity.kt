@@ -4,27 +4,39 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchColors
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.richdev.radiobuttons.ui.theme.RadioButtonsTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,10 +46,77 @@ class MainActivity : ComponentActivity() {
         setContent {
             RadioButtonsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    RadioButtonExample()
+                    // RadioButtonExample()
+                    SwitchExample()
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SwitchExample() {
+    val switchState = remember {
+        mutableStateOf(false)
+    }
+    val myText = remember {
+        mutableStateOf("The images is visible")
+    }
+    val myAlphaValue = remember {
+        mutableFloatStateOf(1F)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.size(50.dp))
+
+        Switch(
+            checked = switchState.value,
+            onCheckedChange = {
+                switchState.value = it
+            },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.Blue,
+                checkedTrackColor = Color.Red,
+                uncheckedThumbColor = Color.Red,
+                uncheckedTrackColor = Color.Blue
+            )
+        )
+
+        Spacer(modifier = Modifier.size(30.dp))
+
+        if (!switchState.value) {
+            myText.value = "The image is visible"
+            myAlphaValue.floatValue = 1F
+        } else {
+            myText.value = "The image is not visible"
+            myAlphaValue.floatValue = 0F
+        }
+
+        Image(
+            painter = painterResource(id = R.drawable.first_image),
+            contentDescription = "",
+            modifier = Modifier.size(300.dp).alpha(myAlphaValue.floatValue),
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.Center
+        )
+
+        Spacer(modifier = Modifier.size(30.dp))
+
+        Text(
+            text = myText.value,
+            color = Color.White,
+            fontSize = 20.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .background(Color.Blue)
+                .width(300.dp)
+                .padding(top = 10.dp, bottom= 10.dp)
+        )
     }
 }
 
@@ -97,6 +176,6 @@ fun RadioButtonExample() {
 @Composable
 fun RadioButtonExamplePreview() {
     RadioButtonsTheme {
-        RadioButtonExample()
+        SwitchExample()
     }
 }
