@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
@@ -33,6 +37,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,8 +52,87 @@ class MainActivity : ComponentActivity() {
             RadioButtonsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     // RadioButtonExample()
-                    SwitchExample()
+                    // SwitchExample()
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun DropdownExample() {
+    val selectedItem = remember {
+        mutableStateOf("Germany")
+    }
+    val dropDownStatus = remember {
+        mutableStateOf(false)
+    }
+    // val countryList = listOf("Germany", "England", "Italy", "Belgium", "Turkey", "Bulgaria", "Netherlands", "Russia", "Brazil", "Argentina", "Germany", "England", "Italy", "Belgium", "Turkey", "Bulgaria", "Netherlands", "Russia", "Brazil", "Argentina")
+    val countryList = stringArrayResource(id = R.array.countryList)
+    val itemPosition = remember {
+        mutableIntStateOf(0)
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box() {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable(enabled = true, onClick = {
+                    dropDownStatus.value = true
+                })
+            ) {
+                Text(
+                    text = countryList[itemPosition.intValue],
+                    modifier = Modifier.clickable(enabled = true, onClick = {
+                        dropDownStatus.value = true
+                    })
+                )
+                Image(painter = painterResource(
+                    id = R.drawable.drop_down_icon),
+                    contentDescription = ""
+                )
+            }
+
+            DropdownMenu(
+                expanded = dropDownStatus.value,
+                onDismissRequest = {
+                    dropDownStatus.value = false
+                }
+            ) {
+                countryList.forEachIndexed { index, country ->
+                    DropdownMenuItem(
+                        onClick = {
+                            dropDownStatus.value = false
+                            itemPosition.intValue = index
+                        },
+                        text = {
+                            Text(text = country)
+                        }
+                    )
+                }
+//                DropdownMenuItem(
+//                    onClick = {
+//                        dropDownStatus.value = false
+//                        selectedItem.value = "England"
+//                    },
+//                    text = {
+//                        Text(text = "England")
+//                    }
+//                )
+//                DropdownMenuItem(
+//                    onClick = {
+//                        dropDownStatus.value = false
+//                        selectedItem.value = "Italy"
+//                    },
+//                    text = {
+//                        Text(text = "Italy")
+//                    }
+//                )
             }
         }
     }
@@ -176,6 +260,6 @@ fun RadioButtonExample() {
 @Composable
 fun RadioButtonExamplePreview() {
     RadioButtonsTheme {
-        SwitchExample()
+        DropdownExample()
     }
 }
